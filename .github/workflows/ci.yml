@@ -1,0 +1,40 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore, build, test, pack and audit
+        shell: pwsh
+        run: ./eng/Validate.ps1 -Clean
+      - name: Package-only consumers and documentation examples
+        shell: pwsh
+        run: ./eng/Test-Package.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-and-validation
+          path: |
+            artifacts/packages/*
+            artifacts/package-content.txt
+            artifacts/consumer-results.txt
+            artifacts/logs/*
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet test tests/Zamay.Core.Tests -c Release
+      - run: dotnet test tests/Zamay.Sqlite.Tests -c Release
+      - run: dotnet pack src/Zamay -c Release
+      - shell: pwsh
+        run: ./eng/Test-Package.ps1 -SkipWindows

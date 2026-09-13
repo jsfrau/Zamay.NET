@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Zamay.Windows/Zamay.Windows.csproj" />
+    <ProjectReference Include="../../src/Zamay.Presentation/Zamay.Presentation.csproj" />
+    <ProjectReference Include="../../src/Zamay.Sqlite/Zamay.Sqlite.csproj" />
+  </ItemGroup>
+</Project>

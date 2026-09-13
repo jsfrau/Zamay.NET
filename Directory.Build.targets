@@ -1,0 +1,15 @@
+<Project>
+  <Target Name="ReadLocalRevision" BeforeTargets="InitializeSourceControlInformation;GenerateAssemblyInfo;GenerateSourceLinkFile;GenerateNuspec" Condition="'$(MSBuildProjectName)' == 'Zamay'">
+    <Exec Command="git rev-parse HEAD" WorkingDirectory="$(MSBuildThisFileDirectory)" ConsoleToMSBuild="true" StandardOutputImportance="Low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="RepositoryCommit" />
+    </Exec>
+    <PropertyGroup>
+      <SourceRevisionId>$(RepositoryCommit)</SourceRevisionId>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(RepositoryUrl)' != ''">
+      <SourceRoot Update="@(SourceRoot)">
+        <RevisionId>$(RepositoryCommit)</RevisionId>
+      </SourceRoot>
+    </ItemGroup>
+  </Target>
+</Project>

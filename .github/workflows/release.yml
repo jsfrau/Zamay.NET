@@ -1,0 +1,54 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Reviewed release tag
+        required: true
+        default: v2.0.0
+permissions:
+  contents: read
+jobs:
+  release:
+    if: inputs.tag == 'v2.0.0'
+    runs-on: windows-latest
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Owner metadata guard
+        shell: pwsh
+        run: ./eng/Assert-PublishReady.ps1
+      - name: Validate release
+        shell: pwsh
+        run: ./eng/Validate.ps1 -Clean
+      - name: Test actual package and examples
+        shell: pwsh
+        run: ./eng/Test-Package.ps1
+      - name: Verify published source checksums
+        shell: pwsh
+        run: dotnet run --project eng/PackageAudit -c Release -- . --verify-urls
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Zamay-2.0.0
+          path: artifacts/packages/*
+      - name: NuGet Trusted Publishing
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Publish package and matching symbols
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push artifacts/packages/Zamay.2.0.0.nupkg --source https://api.nuget.org/v3/index.json --api-key $env:NUGET_API_KEY
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

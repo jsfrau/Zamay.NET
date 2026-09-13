@@ -1,0 +1,21 @@
+using Zamay;
+using Zamay.Core;
+using Zamay.Sqlite;
+using Microsoft.Data.Sqlite;
+
+var value=new {Id=42,Name="Алексей",Password="secret"};
+using var writer=new StringWriter();value.ToConsole(writer);
+if(!writer.ToString().Contains("Алексей") || writer.ToString().Contains("secret")) throw new Exception("Package console contract failed");
+if(!value.ToDisplayString().Contains("Redacted")) throw new Exception("Masking failed");
+if(typeof(ObjectInspector).Assembly.GetName().Name!="Zamay") throw new Exception("Not using the packaged assembly");
+if(typeof(ObjectInspector).Assembly.GetReferencedAssemblies().Any(a=>a.Name=="System.Windows.Forms")) throw new Exception("Windows dependency in net8.0");
+var path=Path.Combine(Path.GetTempPath(),"zamay-consumer-"+Guid.NewGuid()+".db");
+try {
+    using var connection=new SqliteConnection("Data Source="+path+";Pooling=False");connection.Open();
+    using(var command=connection.CreateCommand()) {command.CommandText="CREATE TABLE Users(Id INTEGER PRIMARY KEY,Name TEXT); INSERT INTO Users VALUES(1,'Алексей'),(2,'Мария')";command.ExecuteNonQuery();}
+    var session=new SqliteInspectorSession(connection);await session.LoadSchemaAsync();
+    var page=await session.ReadPageAsync("Users",new(){Latest=true});
+    if(((ScalarNode)page.Table.Rows[0][0]).Text!="2" || await session.CountAsync("Users")!=2) throw new Exception("SQLite package smoke failed");
+    if(connection.State!=System.Data.ConnectionState.Open) throw new Exception("Borrowed connection was closed");
+} finally {File.Delete(path);}
+Console.WriteLine("Console, Unicode, masking, assembly identity, non-Windows references and SQLite package smoke: PASS");

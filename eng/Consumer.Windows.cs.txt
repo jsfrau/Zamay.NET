@@ -1,0 +1,38 @@
+using Zamay;
+using Zamay.Core;
+using Zamay.Windows;
+using Zamay.Windows.Sqlite;
+using Microsoft.Data.Sqlite;
+
+internal static class Program {
+    [STAThread] private static void Main() {
+        ApplicationConfiguration.Initialize();
+        using(var timer=new System.Windows.Forms.Timer {Interval=150}) {
+            DialogDispatcher.Show(()=> {
+                var form=new ZamayDialog(new ObjectInspector().Inspect(new {Id=42,Name="Алексей"})) {StartPosition=FormStartPosition.Manual,Location=new(-20000,-20000),ShowInTaskbar=false};
+                timer.Tick+=(_,_)=>form.Close();form.Shown+=(_,_)=>timer.Start();return form;
+            });
+        }
+        using var connection=new SqliteConnection("Data Source=:memory:");connection.Open();
+        using(var command=connection.CreateCommand()){command.CommandText="CREATE TABLE Users(Id INTEGER PRIMARY KEY); INSERT INTO Users VALUES(1)";command.ExecuteNonQuery();}
+        bool schemaLoaded=false;
+        using(var timer=new System.Windows.Forms.Timer {Interval=50}) {
+            var watch=System.Diagnostics.Stopwatch.StartNew();
+            DialogDispatcher.Show(()=> {
+                var form=new SqliteBrowserDialog(new(connection)) {StartPosition=FormStartPosition.Manual,Location=new(-20000,-20000),ShowInTaskbar=false};
+                timer.Tick+=(_,_)=> {
+                    var tree=Children(form).OfType<TreeView>().Single();
+                    if(tree.Enabled && tree.Nodes.Count>0 && tree.Nodes[0].Nodes.Count==1){schemaLoaded=true;form.Close();}
+                    else if(watch.Elapsed>TimeSpan.FromSeconds(10)){form.Close();}
+                };
+                form.Shown+=(_,_)=>timer.Start();return form;
+            });
+        }
+        if(!schemaLoaded || connection.State!=System.Data.ConnectionState.Open) throw new Exception("Windows SQLite smoke failed");
+        if(typeof(ZamayDialog).Assembly.GetName().Name!="Zamay")throw new Exception("Not using package assembly");
+        Console.WriteLine("Windows object dialog and SQLite browser package smoke: PASS");
+    }
+    private static IEnumerable<Control> Children(Control root){foreach(Control child in root.Controls){yield return child;foreach(var nested in Children(child))yield return nested;}}
+    // Compile the convenience entry points without leaving an unattended modal window open.
+    private static void ConvenienceApi(object value,SqliteConnection connection){value.ToMessageBox();connection.ToMessageBox();}
+}

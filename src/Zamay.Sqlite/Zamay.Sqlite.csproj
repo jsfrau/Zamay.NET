@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Zamay.Core/Zamay.Core.csproj" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.26" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+<Project>
+  <Import Project="eng/Release.props" />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <IsPackable>false</IsPackable>
+    <Version>$(ZamayVersion)</Version>
+    <DebugType>portable</DebugType>
+    <PathMap>$(MSBuildThisFileDirectory)=/_/</PathMap>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework />
+    <TargetFrameworks>net8.0;net8.0-windows</TargetFrameworks>
+    <UseWindowsForms Condition="'$(TargetFramework)' == 'net8.0-windows'">true</UseWindowsForms>
+    <AssemblyName>Zamay</AssemblyName>
+    <RootNamespace>Zamay</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>Zamay</PackageId>
+    <Description>Diagnostic object and data inspection for .NET, with console rendering, bounded traversal, a Windows inspector, and SQLite browsing.</Description>
+    <PackageTags>diagnostics;debugging;object-inspection;console;reflection;sqlite;winforms;datatable;developer-tools</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReleaseNotes>Zamay 2.0 is a complete rewrite of the original package. Document-based inspection, console rendering, a Windows diagnostic dialog, SQLite browsing, bounded traversal, and configurable sensitive-data handling. Not API-compatible with 1.x.</PackageReleaseNotes>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Self-describing record properties do not require boilerplate XML summaries. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedAllSources>true</EmbedAllSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <PackageOutputPath>../../artifacts/packages</PackageOutputPath>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Zamay.Core/*.cs;../Zamay.Console/*.cs;../Zamay.Sqlite/*.cs;../Zamay.Presentation/*.cs" />
+    <Compile Include="../Zamay.Windows/*.cs;../Zamay.Windows.Sqlite/*.cs" Condition="'$(TargetFramework)' == 'net8.0-windows'" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.26" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" Condition="'$(RepositoryUrl)' != ''" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../icon.png" Pack="true" PackagePath="/" />
+    <None Include="../../docs/*.md" Exclude="../../docs/package-identity.md" Pack="true" PackagePath="docs/" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(RepositoryUrl)' != ''">
+    <SourceRoot Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))" MappedPath="/_/" SourceControl="git" RepositoryUrl="$(RepositoryUrl)" />
+  </ItemGroup>
+</Project>
