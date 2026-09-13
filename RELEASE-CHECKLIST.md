@@ -15,13 +15,13 @@
 - [x] Final clean restore/build/test/pack passes.
 - [x] README, icon, license, XML, dependencies and assemblies inspected in nupkg.
 - [x] snupkg generated and portable PDB/embedded sources inspected.
-- [ ] Remote Source Link verified against the real published commit.
+- [x] Remote Source Link verified against the real published commit.
 - [x] Console/SQLite local package consumer passes without ProjectReference.
 - [x] Windows package consumer compiles and smoke-runs.
 - [x] Documentation C# examples compile against the package.
 - [x] Own source/docs/package reviewed for secrets, absolute paths and development artifacts.
 - [x] Final package hashes recorded.
-- [ ] Ready for NuGet.org upload.
+- [x] Ready for NuGet.org upload.
 
-The unchecked repository/remote Source Link items are owner prerequisites. Validation scripts do not publish. The release workflow rejects an unset RepositoryUrl before requesting publication credentials.
+Both package files were submitted to NuGet.org. Source Link verification passed against tag v2.0.0 (commit 84e91a2b3ed400f2b879290197ceee1f53a86c8a). CI passed on Windows and Linux. Validation scripts do not publish.
 

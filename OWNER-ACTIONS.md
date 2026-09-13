@@ -1,10 +1,11 @@
 # Owner actions
 
-## Before publishing
+## Zamay 2.0.0 status
 
 - The public source repository is https://github.com/jsfrau/Zamay.NET; RepositoryUrl is centralized in eng/Release.props and PackageProjectUrl follows it.
-- Make the release source commit public, rebuild from that commit, and run the package audit with --verify-urls before uploading.
-- Publish the matching nupkg and snupkg using PUBLISHING.md after validation passes.
+- Source commit 84e91a2b3ed400f2b879290197ceee1f53a86c8a is public under tag v2.0.0. Source Link downloads and SHA256 checks passed for both frameworks.
+- The main package and matching symbols package were submitted successfully to NuGet.org. Server validation and indexing are in progress; no owner credentials or repository decisions remain outstanding.
+- GitHub Release includes both submitted package files and SHA256SUMS.txt: https://github.com/jsfrau/Zamay.NET/releases/tag/v2.0.0.
 
 MIT and Authors=ZamaySolves were explicitly confirmed. They do not require another decision. An icon, documentation, packaging, tests, and release workflows are included.
 
