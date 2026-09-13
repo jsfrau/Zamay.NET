@@ -20,6 +20,7 @@
     <EmbedAllSources>true</EmbedAllSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
     <PackageOutputPath>../../artifacts/packages</PackageOutputPath>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
